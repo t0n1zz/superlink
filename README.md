@@ -1,36 +1,99 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Superlink
 
-## Getting Started
+**Reputation-Powered Connections** — Indonesia's verified Web3 talent network, powered by FairScale.
 
-First, run the development server:
+## Tech stack
+
+- **Next.js 16** (App Router), TypeScript, Tailwind CSS
+- **PostgreSQL** + Prisma
+- **Solana** (wallet adapter: Phantom, Solflare)
+- **FairScale API** for reputation scores
+- **Mapbox** for the builders map
+
+## Quick start
 
 ```bash
+# Install dependencies (if not already done)
+npm install
+npm install @hookform/resolvers   # for JobPostForm zod resolver
+
+# Set up environment
+cp .env.example .env.local
+# Edit .env.local with your DATABASE_URL, FairScale key, Mapbox token, etc.
+
+# Database
+npx prisma generate
+npx prisma db push
+
+# Development
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+superlink/
+├── app/
+│   ├── (auth)/login, register
+│   ├── (dashboard)/profile, directory, jobs, map, universities
+│   ├── api/auth, fairscale, users, jobs, students, superteam
+│   ├── layout.tsx, page.tsx
+├── components/auth, profile, directory, map, jobs
+├── lib/db, fairscale, solana, auth, utils, superteam-scraper
+├── hooks/, types/
+├── prisma/schema.prisma
+└── .env.example
+```
 
-## Learn More
+## Main features
 
-To learn more about Next.js, take a look at the following resources:
+- **Wallet auth**: Connect Solana wallet; register stores user + FairScore.
+- **FairScale**: `getFairScore(wallet)`, `syncFairScore(userId, wallet)`; sync API at `POST /api/fairscale/sync`.
+- **Profiles**: View profile at `/profile/[id]` (header, skills, portfolio, endorsements).
+- **Directory**: `/directory` with filters (city, skill, min FairScore, availability); search API at `GET /api/users/search`.
+- **Map**: `/map` — Mapbox map of builders with coordinates; `GET /api/users/map`.
+- **Jobs**: Post job (with min FairScore), apply; FairScore gating in `POST /api/jobs/[id]/apply`.
+- **Students**: `POST /api/students/verify` for student verification (.ac.id bonus).
+- **Universities**: `/universities/[slug]` — campus stats and student leaderboard.
+- **Superteam Earn**: `POST /api/superteam/import` — import by username (scraper placeholder; implement with Puppeteer when ready).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Environment variables
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+See `.env.example`. Required for full functionality:
 
-## Deploy on Vercel
+- `DATABASE_URL` — PostgreSQL connection string
+- `FAIRSCALE_API_KEY` — FairScale API key
+- `NEXT_PUBLIC_MAPBOX_TOKEN` — Mapbox public token (map works without it but shows a placeholder)
+- `NEXT_PUBLIC_SOLANA_RPC_URL` — Solana RPC (defaults to mainnet-beta)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Database
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npx prisma studio    # Visual DB editor
+npx prisma migrate dev --name <name>   # Create migration
+npx prisma db seed   # If seed script is configured
+```
+
+## Deployment
+
+```bash
+npm run build
+npx prisma migrate deploy   # Production DB
+# Deploy to Vercel (or your host); set env vars in dashboard.
+```
+
+## Development plan (6 weeks to MVP)
+
+| Week | Focus |
+|------|--------|
+| 1 | Setup, DB schema, auth & wallet |
+| 2 | FairScale integration, profile + directory |
+| 3–4 | Map, jobs + applications |
+| 5 | University integration, Superteam Earn import |
+| 6 | UI/UX polish, testing, production deploy |
+
+---
+
+Built for the FairScale competition.
