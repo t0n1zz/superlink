@@ -9,27 +9,27 @@ export default function PortfolioGrid({ items }: PortfolioGridProps) {
 
   return (
     <section>
-      <h2 className="text-lg font-semibold mb-3">Portfolio</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <h2 className="text-lg font-semibold text-slate-900 mb-3">Portfolio</h2>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {items.map((item) => (
           <a
             key={item.id}
             href={item.projectUrl ?? "#"}
             target="_blank"
             rel="noopener noreferrer"
-            className="block border rounded-lg overflow-hidden hover:shadow-md transition"
+            className="block overflow-hidden rounded-xl border border-slate-200 bg-slate-50 transition hover:shadow-md hover:border-slate-300"
           >
             {item.imageUrl && (
               <img
                 src={item.imageUrl}
                 alt={item.title}
-                className="w-full h-40 object-cover"
+                className="h-40 w-full object-cover"
               />
             )}
-            <div className="p-3">
-              <h3 className="font-medium">{item.title}</h3>
+            <div className="p-4">
+              <h3 className="font-semibold text-slate-900">{item.title}</h3>
               {item.description && (
-                <p className="text-sm text-gray-600 line-clamp-2">
+                <p className="mt-1 text-sm text-slate-600 line-clamp-2">
                   {item.description}
                 </p>
               )}

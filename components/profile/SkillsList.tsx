@@ -12,16 +12,16 @@ export default function SkillsList({ skills }: SkillsListProps) {
 
   return (
     <section>
-      <h2 className="text-lg font-semibold mb-3">Skills</h2>
+      <h2 className="text-lg font-semibold text-slate-900 mb-3">Skills</h2>
       <ul className="flex flex-wrap gap-2">
         {skills.map((us) => (
           <li
             key={us.id}
-            className="px-3 py-1 bg-gray-100 rounded-full text-sm"
+            className="rounded-xl bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-700"
           >
             {us.skill.name}
             {us.level && (
-              <span className="ml-1 text-gray-500">({us.level})</span>
+              <span className="ml-1 text-slate-500">({us.level})</span>
             )}
           </li>
         ))}

@@ -3,7 +3,7 @@ import { prisma } from "@/lib/db";
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import SkillsList from "@/components/profile/SkillsList";
 import PortfolioGrid from "@/components/profile/PortfolioGrid";
-import EndorsementsList from "@/components/profile/EndorsementsList";
+import EndorsementsSection from "@/components/profile/EndorsementsSection";
 
 export default async function ProfilePage({
   params,
@@ -26,12 +26,27 @@ export default async function ProfilePage({
 
   if (!user) notFound();
 
+  const university =
+    user.university ?
+      await prisma.university.findUnique({
+        where: { name: user.university },
+      })
+    : null;
+
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-8">
-      <ProfileHeader user={user} />
-      <SkillsList skills={user.skills} userId={user.id} />
-      <PortfolioGrid items={user.portfolioItems} />
-      <EndorsementsList endorsements={user.endorsements} />
+    <div className="space-y-10">
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <ProfileHeader user={user} university={university} />
+      </div>
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <SkillsList skills={user.skills} userId={user.id} />
+      </div>
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <PortfolioGrid items={user.portfolioItems} />
+      </div>
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <EndorsementsSection receiverId={user.id} endorsements={user.endorsements} />
+      </div>
     </div>
   );
 }

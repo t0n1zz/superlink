@@ -34,49 +34,43 @@ export default async function UniversityPage({
   const placedInternships = students.filter((s) => s.projectsCompleted > 0).length;
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold">{university.name}</h1>
-        <p className="text-gray-600">
+    <div className="space-y-8">
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <h1 className="text-3xl font-bold text-slate-900">{university.name}</h1>
+        <p className="mt-1 text-slate-600">
           {university.city}, {university.province}
         </p>
       </div>
 
       <div className="grid grid-cols-3 gap-4">
-        <div className="border rounded-lg p-4 text-center">
-          <div className="text-2xl font-bold text-purple-600">
-            {totalStudents}
-          </div>
-          <div className="text-sm text-gray-600">Students</div>
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-sm">
+          <div className="text-2xl font-bold text-indigo-600">{totalStudents}</div>
+          <div className="text-sm font-medium text-slate-600">Students</div>
         </div>
-        <div className="border rounded-lg p-4 text-center">
-          <div className="text-2xl font-bold text-purple-600">
-            {Math.round(avgFairScore)}
-          </div>
-          <div className="text-sm text-gray-600">Avg FairScore</div>
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-sm">
+          <div className="text-2xl font-bold text-indigo-600">{Math.round(avgFairScore)}</div>
+          <div className="text-sm font-medium text-slate-600">Avg FairScore</div>
         </div>
-        <div className="border rounded-lg p-4 text-center">
-          <div className="text-2xl font-bold text-purple-600">
-            {placedInternships}
-          </div>
-          <div className="text-sm text-gray-600">Projects completed</div>
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-sm">
+          <div className="text-2xl font-bold text-indigo-600">{placedInternships}</div>
+          <div className="text-sm font-medium text-slate-600">Projects completed</div>
         </div>
       </div>
 
-      <section>
-        <h2 className="text-xl font-semibold mb-4">Student leaderboard</h2>
-        <ul className="space-y-2">
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <h2 className="mb-4 text-xl font-semibold text-slate-900">Student leaderboard</h2>
+        <ul className="space-y-1">
           {students.map((s, i) => (
             <li key={s.id}>
               <Link
                 href={`/profile/${s.id}`}
-                className="flex items-center gap-4 p-2 rounded hover:bg-gray-50"
+                className="flex items-center gap-4 rounded-xl px-3 py-2.5 transition hover:bg-slate-50"
               >
-                <span className="w-6 text-gray-500">{i + 1}</span>
-                <span className="font-medium">
+                <span className="w-6 text-slate-500">{i + 1}</span>
+                <span className="font-medium text-slate-900">
                   {s.name ?? s.walletAddress.slice(0, 8)}…
                 </span>
-                <span className="text-purple-600 font-semibold">
+                <span className="font-semibold text-indigo-600">
                   FairScore: {s.fairScore}
                 </span>
               </Link>

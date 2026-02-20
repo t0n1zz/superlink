@@ -5,6 +5,13 @@ export async function POST(req: NextRequest) {
   try {
     const { userId, walletAddress } = await req.json();
 
+    if (!userId || !walletAddress) {
+      return NextResponse.json(
+        { error: "userId and walletAddress are required" },
+        { status: 400 }
+      );
+    }
+
     const fairScoreData = await syncFairScore(userId, walletAddress);
 
     return NextResponse.json({

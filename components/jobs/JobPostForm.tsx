@@ -56,39 +56,39 @@ export default function JobPostForm({ posterId, onSuccess }: JobPostFormProps) {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="space-y-6 max-w-2xl"
+      className="max-w-2xl space-y-6"
     >
       <div>
-        <label className="block font-medium mb-2">Job Title</label>
+        <label className="mb-1.5 block font-medium text-slate-700">Job Title</label>
         <input
           {...register("title")}
-          className="w-full border rounded-lg p-3"
+          className="w-full rounded-xl border-2 border-slate-200 px-4 py-2.5 text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
           placeholder="e.g., Solana Smart Contract Developer"
         />
         {errors.title && (
-          <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
+          <p className="mt-1 text-sm font-medium text-red-600">{errors.title.message}</p>
         )}
       </div>
 
       <div>
-        <label className="block font-medium mb-2">Description</label>
+        <label className="mb-1.5 block font-medium text-slate-700">Description</label>
         <textarea
           {...register("description")}
           rows={6}
-          className="w-full border rounded-lg p-3"
+          className="w-full rounded-xl border-2 border-slate-200 px-4 py-2.5 text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
         />
         {errors.description && (
-          <p className="text-red-500 text-sm mt-1">
+          <p className="mt-1 text-sm font-medium text-red-600">
             {errors.description.message}
           </p>
         )}
       </div>
 
       <div>
-        <label className="block font-medium mb-2">Category</label>
+        <label className="mb-1.5 block font-medium text-slate-700">Category</label>
         <input
           {...register("category")}
-          className="w-full border rounded-lg p-3"
+          className="w-full rounded-xl border-2 border-slate-200 px-4 py-2.5 text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
           placeholder="e.g., Development"
         />
         {errors.category && (
@@ -102,7 +102,7 @@ export default function JobPostForm({ posterId, onSuccess }: JobPostFormProps) {
           <input
             type="number"
             {...register("budget", { valueAsNumber: true })}
-            className="w-full border rounded-lg p-3"
+            className="w-full rounded-xl border-2 border-slate-200 px-4 py-2.5 text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
             placeholder="500"
           />
         </div>
@@ -110,7 +110,7 @@ export default function JobPostForm({ posterId, onSuccess }: JobPostFormProps) {
           <label className="block font-medium mb-2">Budget type</label>
           <select
             {...register("budgetType")}
-            className="w-full border rounded-lg p-3"
+            className="w-full rounded-xl border-2 border-slate-200 px-4 py-2.5 text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
           >
             <option value="fixed">Fixed</option>
             <option value="hourly">Hourly</option>
@@ -125,10 +125,10 @@ export default function JobPostForm({ posterId, onSuccess }: JobPostFormProps) {
         <input
           type="number"
           {...register("minFairScore", { valueAsNumber: true })}
-          className="w-full border rounded-lg p-3"
+          className="w-full rounded-xl border-2 border-slate-200 px-4 py-2.5 text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
           placeholder="300"
         />
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="mt-1 text-sm text-slate-500">
           Only builders with this score or higher can apply
         </p>
         {errors.minFairScore && (
@@ -142,7 +142,7 @@ export default function JobPostForm({ posterId, onSuccess }: JobPostFormProps) {
         <label className="block font-medium mb-2">Timeline (optional)</label>
         <input
           {...register("timeline")}
-          className="w-full border rounded-lg p-3"
+          className="w-full rounded-xl border-2 border-slate-200 px-4 py-2.5 text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
           placeholder="e.g., 2 weeks"
         />
       </div>
@@ -150,7 +150,7 @@ export default function JobPostForm({ posterId, onSuccess }: JobPostFormProps) {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="bg-purple-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-purple-700 disabled:opacity-50"
+        className="rounded-xl bg-indigo-600 px-8 py-3 font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-50"
       >
         {isSubmitting ? "Posting…" : "Post Job"}
       </button>

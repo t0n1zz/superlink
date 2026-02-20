@@ -7,7 +7,7 @@ import type { Builder } from "./MapboxMap";
 const MapboxMap = dynamic(() => import("./MapboxMap"), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-[600px] bg-gray-100 rounded-xl animate-pulse" />
+    <div className="h-[600px] w-full animate-pulse rounded-xl border border-slate-200 bg-slate-100" />
   ),
 });
 
@@ -26,22 +26,22 @@ export default function BuildersMap() {
   const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
   if (!token) {
     return (
-      <div className="w-full h-[400px] bg-gray-100 rounded-xl flex items-center justify-center text-gray-500">
-        Add NEXT_PUBLIC_MAPBOX_TOKEN to show the map
+      <div className="flex h-[400px] w-full items-center justify-center rounded-xl border border-slate-200 bg-slate-100 text-slate-600">
+        Add <code className="rounded bg-slate-200 px-1.5 py-0.5 font-mono text-sm">NEXT_PUBLIC_MAPBOX_TOKEN</code> to .env.local to show the map.
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="w-full h-[400px] bg-gray-100 rounded-xl flex items-center justify-center text-red-600">
+      <div className="flex h-[400px] w-full items-center justify-center rounded-xl border border-slate-200 bg-slate-100 text-red-600">
         {error}
       </div>
     );
   }
 
   return (
-    <div className="w-full rounded-xl overflow-hidden border">
+    <div className="w-full overflow-hidden rounded-xl border border-slate-200">
       <MapboxMap
         builders={builders}
         selectedBuilder={selectedBuilder}

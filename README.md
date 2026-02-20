@@ -13,23 +13,28 @@
 ## Quick start
 
 ```bash
-# Install dependencies (if not already done)
+# 1. Install dependencies (runs `prisma generate` automatically via postinstall)
 npm install
-npm install @hookform/resolvers   # for JobPostForm zod resolver
 
-# Set up environment
+# 2. Set up environment
 cp .env.example .env.local
-# Edit .env.local with your DATABASE_URL, FairScale key, Mapbox token, etc.
+# Edit .env.local: set DATABASE_URL (PostgreSQL), and optionally FairScale key, Mapbox token.
 
-# Database
-npx prisma generate
-npx prisma db push
+# 3. Database (requires PostgreSQL running and DATABASE_URL in .env.local)
+npm run db:push             # uses .env.local for DATABASE_URL
+npm run db:seed             # optional: seeds default skills
 
-# Development
+# If you see "User was denied access": grant your DB user access (as postgres):
+#   psql -U postgres -c "GRANT ALL ON DATABASE superlink TO your_username;"
+#   psql -U postgres -d superlink -c "GRANT ALL ON SCHEMA public TO your_username;"
+
+# 4. Development
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
+
+**Note:** API routes that use the database (e.g. `/api/users/search`, `/api/users/map`, `/profile/[id]`) will return 500 until `DATABASE_URL` is set in `.env.local` and you have run `npx prisma db push`.
 
 ## Project structure
 
@@ -71,10 +76,38 @@ See `.env.example`. Required for full functionality:
 ## Database
 
 ```bash
+npx prisma generate  # After schema changes (also runs on npm install)
+npm run db:push      # Apply schema (loads DATABASE_URL from .env.local)
+npm run db:seed      # Seed default skills (loads .env.local)
+npx prisma db push   # Same as db:push if you use .env for DATABASE_URL
+npx prisma migrate dev --name <name>   # Create and run migrations
 npx prisma studio    # Visual DB editor
-npx prisma migrate dev --name <name>   # Create migration
-npx prisma db seed   # If seed script is configured
 ```
+
+## Verification checklist
+
+Verified against the development plan and docs:
+
+- **Setup:** `npm install` (includes `prisma generate` via postinstall), `.env.example` present.
+- **Auth:** `POST /api/auth/register` requires valid `walletAddress` (Solana); validates `userType` enum; returns 400 for invalid/missing wallet.
+- **FairScale:** `POST /api/fairscale/sync` requires `userId` and `walletAddress`; returns 400 if missing. `lib/fairscale.ts` exposes `getFairScore` and `syncFairScore`.
+- **Profile:** `/profile/[id]` uses Prisma with skills, portfolio, endorsements; 404 when user not found.
+- **Directory:** `/directory` and `GET /api/users/search` with query params `city`, `skill`, `minFairScore`, `availability`.
+- **Map:** `/map` and `GET /api/users/map`; Mapbox via `react-map-gl/mapbox`; placeholder when `NEXT_PUBLIC_MAPBOX_TOKEN` is missing.
+- **Jobs:** `POST /api/jobs`, `POST /api/jobs/[id]/apply` with FairScore gating; job post form with Zod + react-hook-form.
+- **Students:** `POST /api/students/verify`; university page at `/universities/[slug]`.
+- **Superteam:** `POST /api/superteam/import`; scraper in `lib/superteam-scraper.ts` (placeholder for Puppeteer).
+- **Build:** `npm run build` succeeds. **Dev:** `npm run dev` serves at http://localhost:3000; homepage loads; wallet connect is client-only.
+
+## Testing
+
+```bash
+npm run test        # Run tests once (Vitest)
+npm run test:watch  # Watch mode
+npm run test:ui     # Vitest UI
+```
+
+Tests live in `lib/*.test.ts` and `app/api/**/*.test.ts`. Current coverage: `lib/utils` (cn), `GET /api/health`.
 
 ## Deployment
 
@@ -84,6 +117,10 @@ npx prisma migrate deploy   # Production DB
 # Deploy to Vercel (or your host); set env vars in dashboard.
 ```
 
+- **Health check:** `GET /api/health` returns `{ status: "ok", timestamp }` for load balancers or monitoring.
+- **404:** Custom `app/not-found.tsx` with link back to home.
+- **Loading:** Root and dashboard routes use `loading.tsx` for skeletons/spinner.
+
 ## Development plan (6 weeks to MVP)
 
 | Week | Focus |
@@ -92,7 +129,7 @@ npx prisma migrate deploy   # Production DB
 | 2 | FairScale integration, profile + directory |
 | 3–4 | Map, jobs + applications |
 | 5 | University integration, Superteam Earn import |
-| 6 | UI/UX polish, testing, production deploy |
+| 6 | UI/UX polish, testing, production deploy (custom 404, loading states, health API, Vitest) |
 
 ---
 

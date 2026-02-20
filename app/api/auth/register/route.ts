@@ -1,10 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getFairScore } from "@/lib/fairscale";
+import { validateWalletAddress } from "@/lib/solana";
+
+const VALID_USER_TYPES = ["BUILDER", "STUDENT", "COMPANY", "UNIVERSITY"] as const;
 
 export async function POST(req: NextRequest) {
   try {
     const { walletAddress, userType, name, email } = await req.json();
+
+    if (!walletAddress || typeof walletAddress !== "string") {
+      return NextResponse.json(
+        { error: "walletAddress is required" },
+        { status: 400 }
+      );
+    }
+    if (!validateWalletAddress(walletAddress)) {
+      return NextResponse.json(
+        { error: "Invalid Solana wallet address" },
+        { status: 400 }
+      );
+    }
+
+    const safeUserType =
+      userType && VALID_USER_TYPES.includes(userType) ? userType : "BUILDER";
 
     const existingUser = await prisma.user.findUnique({
       where: { walletAddress },
@@ -31,7 +50,7 @@ export async function POST(req: NextRequest) {
     const user = await prisma.user.create({
       data: {
         walletAddress,
-        userType: userType ?? "BUILDER",
+        userType: safeUserType,
         name,
         email,
         fairScore: fairScoreData.score,

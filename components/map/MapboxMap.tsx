@@ -3,6 +3,10 @@
 import Map, { Marker, Popup } from "react-map-gl/mapbox";
 import "mapbox-gl/dist/mapbox-gl.css";
 
+// Use Mapbox CDN worker so the map works in Next.js (bundled worker can fail with Turbopack/webpack).
+const MAPBOX_GL_VERSION = "3.18.1";
+const MAPBOX_WORKER_URL = `https://api.mapbox.com/mapbox-gl-js/v${MAPBOX_GL_VERSION}/mapbox-gl-csp-worker.js`;
+
 export interface Builder {
   id: string;
   name: string | null;
@@ -28,6 +32,7 @@ export default function MapboxMap({
 }: MapboxMapProps) {
   return (
     <Map
+      mapboxAccessToken={mapboxToken}
       initialViewState={{
         longitude: 118.0,
         latitude: -2.5,
@@ -35,7 +40,10 @@ export default function MapboxMap({
       }}
       style={{ width: "100%", height: 600 }}
       mapStyle="mapbox://styles/mapbox/light-v11"
-      mapboxAccessToken={mapboxToken}
+      workerUrl={MAPBOX_WORKER_URL}
+      onError={(e) => {
+        console.error("Mapbox error:", e.error);
+      }}
     >
       {builders.map((builder) => (
         <Marker
@@ -44,7 +52,7 @@ export default function MapboxMap({
           latitude={builder.latitude}
           onClick={() => onSelectBuilder(builder)}
         >
-          <div className="w-8 h-8 bg-purple-600 rounded-full border-2 border-white cursor-pointer hover:scale-110 transition shadow" />
+          <div className="h-8 w-8 rounded-full border-2 border-white bg-indigo-600 shadow transition hover:scale-110 cursor-pointer" />
         </Marker>
       ))}
       {selectedBuilder && (
@@ -53,14 +61,14 @@ export default function MapboxMap({
           latitude={selectedBuilder.latitude}
           onClose={() => onSelectBuilder(null)}
         >
-          <div className="p-2 min-w-[140px]">
-            <h3 className="font-bold">
+          <div className="min-w-[140px] p-2">
+            <h3 className="font-bold text-slate-900">
               {selectedBuilder.name ?? "Builder"}
             </h3>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-slate-600">
               {selectedBuilder.city ?? "—"}
             </p>
-            <p className="text-sm font-semibold">
+            <p className="text-sm font-semibold text-slate-900">
               FairScore: {selectedBuilder.fairScore}
             </p>
           </div>
